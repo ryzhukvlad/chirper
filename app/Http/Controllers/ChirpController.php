@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChirpStoreUpdateRequest;
 use App\Models\Chirp;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -30,11 +31,9 @@ class ChirpController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(ChirpStoreUpdateRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-           'message' => 'required|string|max:255',
-        ]);
+        $validated = $request->validated();
 
         $request->user()->chirps()->create($validated);
         return redirect(route('chirps.index'));
@@ -61,13 +60,10 @@ class ChirpController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Chirp $chirp): RedirectResponse
+    public function update(ChirpStoreUpdateRequest $request, Chirp $chirp): RedirectResponse
     {
         $this->authorize('update', $chirp);
-
-        $validated = $request->validate([
-            'message' => 'required|string|max:255'
-        ]);
+        $validated = $request->validated();
 
         $chirp->update($validated);
         return redirect(route('chirps.index'));
